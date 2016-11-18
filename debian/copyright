@@ -4,11 +4,11 @@ Upstream-Contact: David M. Beazley <dave@dabeaz.com>
 Source: http://www.dabeaz.com/ply/
 
 Files: *
-Copyright: 2001-2012 David M. Beazley (Dabeaz LLC) <dave@dabeaz.com>
+Copyright: 2001-2016 David M. Beazley (Dabeaz LLC) <dave@dabeaz.com>
 License: BSD-3-clause
 
 Files: debian/*
-Copyright: 2006-2014, Arnaud Fontaine <arnau@debian.org>
+Copyright: 2006-2016, Arnaud Fontaine <arnau@debian.org>
 License: BSD-3-clause
 
 License: BSD-3-clause

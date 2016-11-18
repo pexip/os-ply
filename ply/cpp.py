@@ -9,13 +9,22 @@
 # -----------------------------------------------------------------------------
 from __future__ import generators
 
+import sys
+
+# Some Python 3 compatibility shims
+if sys.version_info.major < 3:
+    STRING_TYPES = (str, unicode)
+else:
+    STRING_TYPES = str
+    xrange = range
+
 # -----------------------------------------------------------------------------
 # Default preprocessor lexer definitions.   These tokens are enough to get
 # a basic preprocessor working.   Other modules may import these if they want
 # -----------------------------------------------------------------------------
 
 tokens = (
-   'CPP_ID','CPP_INTEGER', 'CPP_FLOAT', 'CPP_STRING', 'CPP_CHAR', 'CPP_WS', 'CPP_COMMENT', 'CPP_POUND','CPP_DPOUND'
+   'CPP_ID','CPP_INTEGER', 'CPP_FLOAT', 'CPP_STRING', 'CPP_CHAR', 'CPP_WS', 'CPP_COMMENT1', 'CPP_COMMENT2', 'CPP_POUND','CPP_DPOUND'
 )
 
 literals = "+-*/%|&~^<>=!?()[]{}.,;:\\\'\""
@@ -34,7 +43,7 @@ t_CPP_ID = r'[A-Za-z_][\w_]*'
 
 # Integer literal
 def CPP_INTEGER(t):
-    r'(((((0x)|(0X))[0-9a-fA-F]+)|(\d+))([uU]|[lL]|[uU][lL]|[lL][uU])?)'
+    r'(((((0x)|(0X))[0-9a-fA-F]+)|(\d+))([uU][lL]|[lL][uU]|[uU]|[lL])?)'
     return t
 
 t_CPP_INTEGER = CPP_INTEGER
@@ -55,10 +64,19 @@ def t_CPP_CHAR(t):
     return t
 
 # Comment
-def t_CPP_COMMENT(t):
-    r'(/\*(.|\n)*?\*/)|(//.*?\n)'
-    t.lexer.lineno += t.value.count("\n")
+def t_CPP_COMMENT1(t):
+    r'(/\*(.|\n)*?\*/)'
+    ncr = t.value.count("\n")
+    t.lexer.lineno += ncr
+    # replace with one space or a number of '\n'
+    t.type = 'CPP_WS'; t.value = '\n' * ncr if ncr else ' '
     return t
+
+# Line comment
+def t_CPP_COMMENT2(t):
+    r'(//.*?(\n|$))'
+    # replace with '/n'
+    t.type = 'CPP_WS'; t.value = '\n'
     
 def t_error(t):
     t.type = t.value[0]
@@ -581,7 +599,7 @@ class Preprocessor(object):
         expr = expr.replace("!"," not ")
         try:
             result = eval(expr)
-        except StandardError:
+        except Exception:
             self.error(self.source,tokens[0].lineno,"Couldn't evaluate expression")
             result = 0
         return result
@@ -614,8 +632,9 @@ class Preprocessor(object):
             if tok.value == '#':
                 # Preprocessor directive
 
+                # insert necessary whitespace instead of eaten tokens
                 for tok in x:
-                    if tok in self.t_WS and '\n' in tok.value:
+                    if tok.type in self.t_WS and '\n' in tok.value:
                         chunk.append(tok)
                 
                 dirtokens = self.tokenstrip(x[i+1:])
@@ -771,7 +790,7 @@ class Preprocessor(object):
     # ----------------------------------------------------------------------
 
     def define(self,tokens):
-        if isinstance(tokens,(str,unicode)):
+        if isinstance(tokens,STRING_TYPES):
             tokens = self.tokenize(tokens)
 
         linetok = tokens

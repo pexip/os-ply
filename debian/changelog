@@ -1,3 +1,29 @@
+ply (3.9-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * Fixed VCS URL (https).
+
+  [ Arnaud Fontaine ]
+  * New upstream release. Closes: #833428.
+  * d/control:
+    + Bump debhelper compat level to 10 (5 is deprecated).
+    + Bump Standards-Version to 3.9.8. No change needed.
+
+ -- Arnaud Fontaine <arnau@debian.org>  Fri, 18 Nov 2016 15:32:37 +0900
+
+ply (3.7-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+  * debian/patches
+    - Refreshed: relax-lex-tabversion-check.patch
+    - Removed; applied upstream: fix-lex-tabversion.patch,
+      fixed-yacc-tests-to-account-for-dict-hash-key-random.patch,
+      more-test-fixes.patch, fixed-lexer-line-tracking.patch
+    - Added: py35-compat.patch (Closes: #797840)
+
+ -- Barry Warsaw <barry@debian.org>  Wed, 02 Sep 2015 17:50:09 -0400
+
 ply (3.4-5) unstable; urgency=medium
 
   * d/rules: add manpage for dh_python3-ply.
