@@ -1,8 +1,9 @@
 Source: ply
 Section: python
 Priority: optional
-Maintainer: Arnaud Fontaine <arnau@debian.org>
-Uploaders: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Arnaud Fontaine <arnau@debian.org>
+XSBC-Pexip-Original-Uploaders: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
 Build-Depends: debhelper (>= 5.0.37.2),
                cdbs (>= 0.4.90-1~),
                python-all (>= 2.6.6-9~),
@@ -16,6 +17,7 @@ Standards-Version: 3.9.6
 Homepage: http://www.dabeaz.com/ply/
 Vcs-Svn: svn://anonscm.debian.org/python-modules/packages/ply/trunk/
 Vcs-Browser: http://anonscm.debian.org/viewvc/python-modules/packages/ply/trunk/
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
 
 Package: python-ply
 Architecture: all
