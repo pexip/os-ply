@@ -17,7 +17,7 @@ Standards-Version: 3.9.6
 Homepage: http://www.dabeaz.com/ply/
 Vcs-Svn: svn://anonscm.debian.org/python-modules/packages/ply/trunk/
 Vcs-Browser: http://anonscm.debian.org/viewvc/python-modules/packages/ply/trunk/
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ jessie
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ stretch
 
 Package: python-ply
 Architecture: all
