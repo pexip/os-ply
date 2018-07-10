@@ -1,3 +1,9 @@
+ply (3.9-1pexip1) pexip; urgency=medium
+
+  * Migrate to Stretch
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 10 Jul 2018 11:38:32 +0000
+
 ply (3.9-1) unstable; urgency=medium
 
   [ Ondřej Nový ]
