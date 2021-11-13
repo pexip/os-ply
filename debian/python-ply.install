@@ -1,2 +1,0 @@
-debian/tmp/usr/lib/python2*	usr/lib/
-debian/dh_python-ply		usr/bin/

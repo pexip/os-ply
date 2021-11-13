@@ -1,41 +1,32 @@
 #!/usr/bin/make -f
-# -*- mode: makefile; coding: utf-8 -*-
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/python-distutils.mk
+#export DH_VERBOSE=1
 
-# Don't compress .py files
-DEB_COMPRESS_EXCLUDE_ALL := .py
+# extra args for 'setup.py install'
+export PYBUILD_INSTALL_ARGS=--no-compile
 
-DEB_PYTHON_INSTALL_ARGS_ALL += --single-version-externally-managed \
-	--install-layout=deb
+%:
+	dh $@ --with python3 --buildsystem=pybuild
 
-PYVERSIONS := $(shell pyversions -s)
-PY3VERSIONS := $(shell py3versions -s)
+override_dh_auto_test:
+	PYBUILD_SYSTEM=custom PYBUILD_TEST_ARGS="cd {build_dir}/test \
+		&& {interpreter} testlex.py \
+		&& {interpreter} testyacc.py \
+		&& if {interpreter} -c 'from _multiprocessing import SemLock; sl = SemLock(1, 2, 3, \"4\", 5); sl.release()' > /dev/null 2>&1; then \
+			{interpreter} testcpp.py; \
+		   else \
+			echo 'Support for multiprocessing.SemLock missing, skipping testcpp.py'; \
+		   fi \
+		&& /bin/sh cleanup.sh" dh_auto_test
 
-ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-build:
-	set -e; \
-	for pyver in $(PYVERSIONS) $(PY3VERSIONS); do \
-		echo "Testing with $$pyver"; \
-		(cd test && $$pyver testlex.py && $$pyver testyacc.py && ./cleanup.sh;)\
-	done
-endif
-
-binary-install/python-ply::
-	pod2man debian/dh_python-ply > dh_python-ply.1
-	dh_installman -p python-ply dh_python-ply.1
-	rm dh_python-ply.1
-
-binary-install/python3-ply::
+override_dh_auto_build:
+	dh_auto_build
 	pod2man debian/dh_python3-ply > dh_python3-ply.1
-	dh_installman -p python3-ply dh_python3-ply.1
-	rm dh_python3-ply.1
 
-binary-post-install/python-ply::
-	echo "python-ply:Provides=$$(PYTHONPATH=. python debian/virtual-packages.py $(cdbs_curpkg))" >> \
-		debian/python-ply.substvars
+override_dh_gencontrol:
+	echo "python3-ply:Provides=$$(PYTHONPATH=. python3 debian/virtual-packages.py python3-ply)" \
+		>> debian/python3-ply.substvars
+	dh_gencontrol
 
-binary-post-install/python3-ply::
-	echo "python3-ply:Provides=$$(PYTHONPATH=. python debian/virtual-packages.py $(cdbs_curpkg))" >> \
-		debian/python3-ply.substvars
+override_dh_compress:
+	dh_compress --exclude=.py
