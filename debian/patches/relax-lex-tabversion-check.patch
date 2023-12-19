@@ -1,10 +1,8 @@
-From 30bd4b7bbcf989ec11b211e8bc7a6842889db196 Mon Sep 17 00:00:00 2001
 From: Jakub Wilk <jwilk@debian.org>
 Date: Thu, 8 Oct 2015 10:15:00 -0700
 Subject: Don't break already built packages with wrong _tabversion
 
 Forwarded: not-needed
-Patch-Name: relax-lex-tabversion-check.patch
 ---
  ply/lex.py | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
