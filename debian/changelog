@@ -1,3 +1,9 @@
+ply (3.11-5pexip1) pexip-bookworm; urgency=medium
+
+  * Update to bookworm version.
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Tue, 19 Dec 2023 18:44:09 +0000
+
 ply (3.11-5) unstable; urgency=medium
 
   [ Ondřej Nový ]
