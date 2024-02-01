@@ -1,3 +1,9 @@
+ply (3.11-5+pexip24u2) pexip-bookworm; urgency=medium
+
+  * New versioning scheme
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 01 Feb 2024 16:16:42 +0000
+
 ply (3.11-5pexip1) pexip-bookworm; urgency=medium
 
   * Update to bookworm version.
