@@ -1,0 +1,73 @@
+Description: Normalise the whitespace in the docstring for signature
+ The docstring is used in the calculation of the signature of a parser, but
+ the whitespace in the docstring can change between Python interpreter
+ versions, most notably with Python 3.13 that strips common whitespace from
+ the front of the docstring.
+ .
+ Without normalisation of the docstring, loading the parser is a cache miss
+ every time, which is observed as a signicant performance overhead. (See the
+ translate-toolkit test performance and #1095792 for example)
+ .
+ With this normalisation patch, every parsetab.py needs to be rebuilt; it is
+ impossible to make a patch that turns the Python 3.13 __doc__ back into the
+ Python 3.12 __doc__ for backwards compatibility.
+Author: Stuart Prescott <stuart@debian.org>
+--- a/ply/yacc.py
++++ b/ply/yacc.py
+@@ -1995,7 +1995,7 @@
+             self.lr_productions.append(MiniProduction(*p))
+ 
+         self.lr_method = parsetab._lr_method
+-        return parsetab._lr_signature
++        return _normalize(parsetab._lr_signature)
+ 
+     def read_pickle(self, filename):
+         try:
+@@ -2022,14 +2022,13 @@
+             self.lr_productions.append(MiniProduction(*p))
+ 
+         in_f.close()
+-        return signature
++        return _normalize(signature)
+ 
+     # Bind all production function names to callable objects in pdict
+     def bind_callables(self, pdict):
+         for p in self.lr_productions:
+             p.bind(pdict)
+ 
+-
+ # -----------------------------------------------------------------------------
+ #                           === LR Generator ===
+ #
+@@ -2983,7 +2982,7 @@
+                     parts.append(f[3])
+         except (TypeError, ValueError):
+             pass
+-        return ''.join(parts)
++        return _normalize(''.join(parts))
+ 
+     # -----------------------------------------------------------------------------
+     # validate_modules()
+@@ -3134,7 +3133,7 @@
+             if isinstance(item, (types.FunctionType, types.MethodType)):
+                 line = getattr(item, 'co_firstlineno', item.__code__.co_firstlineno)
+                 module = inspect.getmodule(item)
+-                p_functions.append((line, module, name, item.__doc__))
++                p_functions.append((line, module, name, _normalize(item.__doc__)))
+ 
+         # Sort all of the actions by line number; make sure to stringify
+         # modules to make them sortable, since `line` may not uniquely sort all
+@@ -3500,3 +3499,13 @@
+ 
+     parse = parser.parse
+     return parser
++
++
++def _normalize(s):
++    # Normalize the whitespace in the docstring - this can vary between
++    # Python versions, with changes in Python 3.13
++    # https://docs.python.org/3/whatsnew/3.13.html#other-language-changes
++    if s:
++        s = re.sub(" +", " ", s)
++        s = re.sub("\n ", "\n", s)
++    return s
