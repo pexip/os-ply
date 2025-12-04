@@ -1,3 +1,9 @@
+ply (3.11-9+pexip25u2) pexip-trixie; urgency=medium
+
+  * Trixie build for product distribution
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 04 Dec 2025 13:44:36 +0000
+
 ply (3.11-9+pexip25u1) pexip-trixie; urgency=medium
 
   * Initial trixie build
